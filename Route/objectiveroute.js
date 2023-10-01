@@ -138,4 +138,36 @@ route.put('/editobjective/:name', verifyToken, (req, res, next) => {
   }
 });
 
+// Endpoint to delete an objective
+route.delete('/deleteobjective/:name', verifyToken, (req, res, next) => {
+    try {
+      const objectiveName = req.params.name;
+      Objective.findOne({ Name: objectiveName }).then(data => {
+        if (!data) {
+          res.status(401).send({ Message: 'No objective found with the given name.' });
+          return;
+        } else {
+          if (req.Role === 'Developer' && req.Email !== data.AssignedTo) {
+            res.status(403).send({ Message: 'You are not authorized to delete objective of any other user except for yourself.' });
+            return;
+            
+          }
+  
+          
+  
+          Objective.deleteOne({ Name: objectiveName }, {
+            
+          }).then(data => {
+            res.status(200).send({ ...data, Message: 'Deleted Successfully' });
+            Objective.find({}).then(data => {
+              setCache('allobjectives', data);
+            }).catch(err => next(err));
+          }).catch(err => next(err));
+        }
+      });
+    } catch (error) {
+      next(error);
+    }
+  });
+
 export default route; // Exporting the router
