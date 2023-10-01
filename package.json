@@ -36,7 +36,8 @@
     "moment": "^2.29.4",
     "mongoose": "^7.5.3",
     "mongoose-unique-validator": "^4.0.0",
-    "redis": "^4.6.10"
+    "redis": "^4.6.10",
+    "winston": "^3.10.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
