@@ -1,26 +1,28 @@
 import { format, createLogger, transports } from "winston";
+
 const { combine, timestamp, label, printf, prettyPrint } = format;
 const CATEGORY = "winston custom format";
 
 const logger = createLogger({
-  level: "debug",
+  level: "debug", // Logging level set to debug
   format: combine(
-    label({ label: CATEGORY }),
+    label({ label: CATEGORY }), // Adds a label to the log entries
     timestamp({
-      format: "YYYY-MM-DDTHH:mm:ss",
+      format: "YYYY-MM-DDTHH:mm:ss", // Timestamp format
     }),
-    prettyPrint()
+    prettyPrint() // Pretty print the log entries
   ),
   transports: [
+    // Define transports to specify where logs should be written
     new transports.File({
-      filename: "logs/info.log",
+      filename: "logs/info.log", // Log to a file named info.log
     }),
     new transports.File({
-      level: "error",
-      filename: "logs/error.log",
+      level: "error", // Log only error level and above to this transport
+      filename: "logs/error.log", // Log to a file named error.log
     }),
-    new transports.Console(),
+    new transports.Console(), // Log to the console as well
   ],
 });
 
-export default logger;
+export default logger; // Export the configured logger

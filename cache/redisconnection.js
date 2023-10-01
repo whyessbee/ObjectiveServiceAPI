@@ -1,24 +1,39 @@
-import {createClient} from 'redis';
+import { createClient } from 'redis';
+import logger from '../middlewares/logger.js';
 import dotenv from 'dotenv'
-dotenv.config({ path: './dev.env' });
+import path from 'path'
+dotenv.config({ path: path.resolve(process.cwd(),'dev.env') }); // Configuring dotenv to use a specific environment file
 
-let redisClient;
+
+let redisClient; // Declare a variable to hold the Redis client
+
 try {
+    // Create a Redis client with the specified configuration
     redisClient = createClient({
-        password: 'password',//process.env.REDIS_PASSWORD,
+        password: process.env.REDIS_PASSWORD, // Redis password (change this to use process.env.REDIS_PASSWORD)
         socket: {
-            host: 'redis-11185.c44.us-east-1-2.ec2.cloud.redislabs.com',//process.env.REDIS_HOST,
-            port: 11185//process.env.REDIS_PORT
+            host: process.env.REDIS_HOST, // Redis server host (change this to use process.env.REDIS_HOST)
+            port: process.env.REDIS_PORT // Redis server port (change this to use process.env.REDIS_PORT)
         }
     });
-    //redisClient.on("error", (error) => console.error(`Error in redis connection : ${error}`));
-    redisClient.on('ready',()=>console.log('Redis Connected'));
+
+    // Event handler for when the Redis client is ready
+    redisClient.on('ready', () => logger.info('Redis Connected'));
+
+    // Connect to the Redis server
     await redisClient.connect();
+
 } catch (error) {
-    console.error('Error in redis connection module',error);
-    await redisClient.quit();
-    throw error;
+    // Handle errors in the Redis connection
+    logger.error('Error in redis connection module', error);
+
+    // Quit the Redis client if an error occurs during setup
+    if (redisClient) {
+        await redisClient.quit();
+    }
+
+    throw error; // Rethrow the error for higher-level handling
+
 }
 
-export default redisClient
-
+export default redisClient; // Export the Redis client for use in other parts of the application
