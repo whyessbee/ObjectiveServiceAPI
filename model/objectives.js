@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 import uniqueValidator from 'mongoose-unique-validator'
 
 const ObjectiveSchema = new mongoose.Schema({
-    Name: {type:String,required:true},
+    Name: {type:String,required:true,unique:true},
     TargetValue: { type: String,required:true },
     CurrentValue: { type: String,default:"" },
     ValueType:{type:String,required:true},

@@ -1,10 +1,10 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import dotenv from 'dotenv'
-//import userroute from './routes/userRoute.js'
 import bodyparser from 'body-parser'
 import ErrorHandle from './middlewares/errorhandler.js';
 import objroute from './Route/objectiveroute.js'
+import objuserroute from './Route/objectiveuser.js'
 
 dotenv.config({ path: './dev.env' });
 
@@ -13,7 +13,8 @@ const app=express();
 try {
     app.use(bodyparser.json());
     app.use("/objective",objroute);
-   // app.use("/user",userroute);  
+    app.use("/user",objuserroute);
+
     app.use(ErrorHandle);
     
     mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true })
